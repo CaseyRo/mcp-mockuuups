@@ -1,6 +1,6 @@
 [project]
 name = "mcp-mockuuups"
-version = "0.1.0"
+version = "0.1.1"
 description = "MCP server for Mockuuups Studio — search 5000+ device/print mockups and render screenshots or uploaded images into them"
 readme = "README.md"
 license = "MIT"

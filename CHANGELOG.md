@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.1] - 2026-08-25
+
+- docs: full four-device WTDIB demo set
+
+
 ## [0.1.0] - 2026-08-25
 
 - Initial release: `search_mockups`, `create_mockups`, `get_renders`, `account_status`.
