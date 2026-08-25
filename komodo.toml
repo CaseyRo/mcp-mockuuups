@@ -12,5 +12,5 @@ branch = "main"
 environment = """
 MCP_API_KEY = [[MCP_MOCKUUUPS_API_KEY]]
 MOCKUUUPS_API_KEY = [[MOCKUUUPS_API_KEY]]
-PUBLIC_BASE_URL = https://mockuuups.cdit-dev.de
+PUBLIC_BASE_URL = https://mcp-mockuuups.cdit-dev.de
 """

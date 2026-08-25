@@ -12,7 +12,7 @@ services:
       - MOCKUUUPS_API_KEY=${MOCKUUUPS_API_KEY:-}
       # Mockuuups' renderer fetches staged uploads back over the public
       # internet, so this must be the public origin, not a tailnet address.
-      - PUBLIC_BASE_URL=${PUBLIC_BASE_URL:-https://mockuuups.cdit-dev.de}
+      - PUBLIC_BASE_URL=${PUBLIC_BASE_URL:-https://mcp-mockuuups.cdit-dev.de}
       # Trial caps renders at 1000px. Raise once the plan has `hires`.
       - MOCKUUUPS_MAX_SIZE=${MOCKUUUPS_MAX_SIZE:-1000}
     # No volumes on purpose: staged uploads live in memory and are meant to
