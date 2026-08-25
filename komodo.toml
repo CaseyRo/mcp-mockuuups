@@ -1,0 +1,16 @@
+[[stack]]
+name = "git-mcp-mockuuups-nebula"
+description = "MCP server for Mockuuups Studio — mockup search + render with image upload staging"
+deploy = true
+tags = ["mcp"]
+
+[stack.config]
+server_id = "nebula-1"
+git_provider = "github.com"
+repo = "CaseyRo/mcp-mockuuups"
+branch = "main"
+environment = """
+MCP_API_KEY = [[MCP_MOCKUUUPS_API_KEY]]
+MOCKUUUPS_API_KEY = [[MOCKUUUPS_API_KEY]]
+PUBLIC_BASE_URL = https://mockuuups.cdit-dev.de
+"""

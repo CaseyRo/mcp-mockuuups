@@ -1,0 +1,24 @@
+services:
+  mcp-mockuuups:
+    image: ghcr.io/caseyro/mcp-mockuuups:latest
+    restart: unless-stopped
+    init: true
+    ports:
+      - "8013:8000"  # 8013 = next sequential MCP port on nebula-1
+    environment:
+      - TRANSPORT=http
+      - HOST=0.0.0.0
+      - MCP_API_KEY=${MCP_API_KEY:-}
+      - MOCKUUUPS_API_KEY=${MOCKUUUPS_API_KEY:-}
+      # Mockuuups' renderer fetches staged uploads back over the public
+      # internet, so this must be the public origin, not a tailnet address.
+      - PUBLIC_BASE_URL=${PUBLIC_BASE_URL:-https://mockuuups.cdit-dev.de}
+      # Trial caps renders at 1000px. Raise once the plan has `hires`.
+      - MOCKUUUPS_MAX_SIZE=${MOCKUUUPS_MAX_SIZE:-1000}
+    # No volumes on purpose: staged uploads live in memory and are meant to
+    # die with the process.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
