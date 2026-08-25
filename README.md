@@ -3,7 +3,16 @@
 MCP server for [Mockuuups Studio](https://mockuuups.studio/) — search ~5,300 device
 and print mockups, then render a screenshot or your own image into them.
 
-![WTDIB on an iPad Air](docs/demo/wtdib-ipad-air.jpg)
+One design — the [WTDIB](https://www.wattedoeninberlijn.nl) Berlin city guide —
+rendered into four mockups from a single photoshoot, so the room stays put while
+the device changes. Two tool calls, no image hosting anywhere.
+
+| | |
+|---|---|
+| ![iPad Air](docs/demo/wtdib-ipad-air.jpg) | ![MacBook Pro 14](docs/demo/wtdib-macbook-pro-14.jpg) |
+| `ipad-air` | `macbook-pro-14` |
+| ![iPhone 15 Pro](docs/demo/wtdib-iphone-15-pro.jpg) | ![Television](docs/demo/wtdib-television.jpg) |
+| `iphone-15-pro` | `television` |
 
 ## Why this exists
 
