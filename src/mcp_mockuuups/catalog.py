@@ -70,12 +70,11 @@ def _blob(m: dict) -> str:
     return " ".join(parts).lower().replace("-", " ")
 
 
-async def load(force: bool = False) -> list[dict]:
+async def load() -> list[dict]:
     """Return the catalog, fetching it once per TTL."""
     global _cache, _fetched_at
     async with _lock:
-        fresh = _cache and (time.time() - _fetched_at) < settings.catalog_ttl_seconds
-        if fresh and not force:
+        if _cache and (time.time() - _fetched_at) < settings.catalog_ttl_seconds:
             return _cache
         mockups = await client.fetch_catalog()
         for m in mockups:
@@ -102,7 +101,7 @@ def _score(m: dict, tokens: list[str], alias_families: set[str]) -> int:
             score += 3
         elif tok in blob:
             score += 1
-    if alias_families and (_families(m) & alias_families):
+    if _families(m) & alias_families:
         score += 4
     return score
 

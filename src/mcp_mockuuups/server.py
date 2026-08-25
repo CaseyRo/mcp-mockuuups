@@ -276,21 +276,25 @@ async def search_mockups(
     matches = catalog.search(
         rows, query=query, family=family, kind=kind, tag=tag, limit=limit
     )
-    face = catalog.facets(rows)
-
     if matches:
-        summary = f"{len(matches)} of {len(rows)} mockups match."
-    else:
-        summary = (
-            f"Nothing matched in {len(rows)} mockups. "
-            f"Available families: {', '.join(face['families'])}."
+        # Facets only earn their place when there is nothing to show; alongside
+        # results they are just noise the caller has to read past.
+        return MockupSearchResult(
+            summary=f"{len(matches)} of {len(rows)} mockups match.",
+            count=len(matches),
+            catalog_size=len(rows),
+            mockups=[_to_summary(m) for m in matches],
         )
 
+    face = catalog.facets(rows)
     return MockupSearchResult(
-        summary=summary,
-        count=len(matches),
+        summary=(
+            f"Nothing matched in {len(rows)} mockups. "
+            f"Available families: {', '.join(face['families'])}."
+        ),
+        count=0,
         catalog_size=len(rows),
-        mockups=[_to_summary(m) for m in matches],
+        mockups=[],
         families=face["families"],
         types=face["types"],
     )

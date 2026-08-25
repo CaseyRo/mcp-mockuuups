@@ -37,7 +37,7 @@ def _api() -> httpx.AsyncClient:
                 "https://mockuuups.studio/developers/ and set it in the environment."
             )
         _client = httpx.AsyncClient(
-            base_url=settings.mockuuups_api_base,
+            base_url="https://api.mockuuups.studio",
             headers={"authorization": f"Bearer {key}"},
             timeout=_TIMEOUT,
         )
@@ -124,10 +124,3 @@ async def create_render(
 
 async def get_render(render_id: str) -> dict:
     return await _request("GET", f"/v1/renders/{render_id}")
-
-
-async def aclose() -> None:
-    global _client
-    if _client is not None:
-        await _client.aclose()
-        _client = None

@@ -19,7 +19,6 @@ class Settings(BaseSettings):
 
     # Mockuuups Studio developer API
     mockuuups_api_key: SecretStr = SecretStr("")
-    mockuuups_api_base: str = "https://api.mockuuups.studio"
 
     # The Trial plan renders at most 1000px; larger sizes need the plan's
     # "hires" feature and fail the whole render with feature-not-available.
