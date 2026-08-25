@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.4] - 2026-08-25
+
+- docs: re-render the demo set against the rebuilt WTDIB site
+
+
 ## [0.1.3] - 2026-08-25
 
 - docs: show the upload path working
