@@ -32,6 +32,16 @@ made the hosted one awkward in practice:
   image bytes and it stages them under a short-lived unguessable link for the
   renderer to fetch, so a local design needs no bucket, no CDN and no hosting.
 
+### Rendering an image you hold locally
+
+Mockuuups renders from a URL only. Pass `image_base64` and this server stages the
+bytes under a short-lived unguessable link, lets the renderer fetch it, and lets
+it expire — no bucket, no CDN, no hosting account.
+
+![A local file rendered into an A3 poster mockup](docs/demo/upload-poster-a3.jpg)
+
+*The iPad render above, uploaded from disk and rendered into a framed A3 poster.*
+
 ## Tools
 
 | Tool | What it answers |
