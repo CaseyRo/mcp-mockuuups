@@ -3,7 +3,7 @@
 MCP server for [Mockuuups Studio](https://mockuuups.studio/) — search ~5,300 device
 and print mockups, then render a screenshot or your own image into them.
 
-One design — the [WTDIB](https://www.wattedoeninberlijn.nl) Berlin city guide —
+One design — the [WTDIB](https://wtdib.cdit-works.de/) Berlin city guide —
 rendered into four mockups from a single photoshoot, so the room stays put while
 the device changes. Two tool calls, no image hosting anywhere.
 
@@ -60,7 +60,7 @@ devices is to search one, then filter by its tag:
 search_mockups(query="ipad", tag="update-august-2024-meeting-room")
 create_mockups(
     mockup_ids=["Zkn1GMTfiAFX5ZOn", "Zkn2DsTfiAFX5ZPD", "Zkn15MTfiAFX5ZO_"],
-    screenshot_url="https://www.wattedoeninberlijn.nl",
+    screenshot_url="https://wtdib.cdit-works.de/",
 )
 ```
 
