@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.3] - 2026-08-25
+
+- docs: show the upload path working
+
+
 ## [0.1.2] - 2026-08-25
 
 - fix: use fleet hostname convention mcp-mockuuups.cdit-dev.de
