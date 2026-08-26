@@ -2,7 +2,7 @@
 name = "git-mcp-mockuuups-nebula"
 description = "MCP server for Mockuuups Studio — mockup search + render with image upload staging"
 deploy = true
-tags = ["mcp"]
+tags = ["cdit"]
 
 [stack.config]
 server_id = "nebula-1"
