@@ -9,6 +9,12 @@ server_id = "nebula-1"
 git_provider = "github.com"
 repo = "CaseyRo/mcp-mockuuups"
 branch = "main"
+webhook_enabled = true
+# Not redundant with webhook_enabled: without force_deploy Komodo verifies the
+# delivery signature, returns HTTP 200 and then deploys nothing, because it
+# compares against a cached remote hash it has not refreshed. GitHub's delivery
+# log shows OK while the stack never moves.
+webhook_force_deploy = true
 environment = """
 MCP_API_KEY = [[MCP_MOCKUUUPS_API_KEY]]
 MOCKUUUPS_API_KEY = [[MOCKUUUPS_API_KEY]]
