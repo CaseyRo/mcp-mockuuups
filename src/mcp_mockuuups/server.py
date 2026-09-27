@@ -34,6 +34,7 @@ from starlette.responses import JSONResponse, Response
 from . import catalog, client, uploads
 from .auth import BearerTokenVerifier
 from .config import settings
+from .usage import UsageMiddleware
 
 try:
     __version__ = version("mcp-mockuuups")
@@ -47,6 +48,7 @@ if settings.mcp_api_key.get_secret_value():
     _auth = BearerTokenVerifier(settings.mcp_api_key.get_secret_value())
 
 mcp = FastMCP("mcp-mockuuups", auth=_auth)
+mcp.add_middleware(UsageMiddleware("mockuuups"))
 
 _READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True}
 
