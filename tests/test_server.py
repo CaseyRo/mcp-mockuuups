@@ -259,3 +259,12 @@ async def test_health_does_not_call_upstream():
     resp = await server.health_check(SimpleNamespace())
     assert resp.status_code == 200
     assert b"healthy" in resp.body
+
+
+async def test_tool_call_writes_one_usage_line(capsys):
+    await _call("search_mockups", {"query": "tablet"})
+    lines = [ln for ln in capsys.readouterr().err.splitlines() if '"mcp_usage"' in ln]
+    assert len(lines) == 1
+    assert '"server": "mockuuups"' in lines[0]
+    assert '"tool": "search_mockups"' in lines[0]
+    assert '"outcome": "ok"' in lines[0]

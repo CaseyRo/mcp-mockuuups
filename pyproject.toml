@@ -39,3 +39,7 @@ dev = [
     "pytest-asyncio>=1.0",
     "ruff>=0.15.14",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# Vendored verbatim from CDiT-infrastructure/scripts/mcp_usage_middleware.py.
+"src/mcp_mockuuups/usage.py" = ["UP017", "S110", "BLE001"]

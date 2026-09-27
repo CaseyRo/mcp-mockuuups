@@ -1,5 +1,7 @@
 # Changelog
 
+From 2026-09-27 versions are git tags (`vX.Y.Z`, cut by release.yml); pyproject's version is no longer bumped and this file is no longer auto-appended.
+
 ## [0.1.4] - 2026-08-25
 
 - docs: re-render the demo set against the rebuilt WTDIB site
