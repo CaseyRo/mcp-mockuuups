@@ -72,6 +72,29 @@ async def _call(name, args):
         return (await c.call_tool(name, args)).structured_content
 
 
+# -- protocol surface ---------------------------------------------------------
+# Guards the fastmcp upgrade: server imports, tools register, hints reach the wire.
+
+EXPECTED_TOOLS = {"search_mockups", "create_mockups", "get_renders", "account_status"}
+
+
+async def test_server_registers_its_tools():
+    async with Client(server.mcp) as c:
+        names = {t.name for t in await c.list_tools()}
+    assert EXPECTED_TOOLS <= names, f"missing: {EXPECTED_TOOLS - names}"
+
+
+async def test_read_only_tools_are_annotated_over_the_wire():
+    async with Client(server.mcp) as c:
+        tools = {t.name: t for t in await c.list_tools()}
+    ann = tools["search_mockups"].annotations
+    assert ann is not None
+    assert ann.readOnlyHint is True
+    assert ann.destructiveHint is False
+    # create_mockups spends credits: it must never advertise itself as read-only
+    assert not (tools["create_mockups"].annotations.readOnlyHint or False)
+
+
 # -- search -------------------------------------------------------------------
 
 
