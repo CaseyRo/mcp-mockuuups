@@ -89,10 +89,14 @@ async def test_read_only_tools_are_annotated_over_the_wire():
         tools = {t.name: t for t in await c.list_tools()}
     ann = tools["search_mockups"].annotations
     assert ann is not None
-    assert ann.readOnlyHint is True
-    assert ann.destructiveHint is False
+    assert ann.read_only_hint is True
+    assert ann.destructive_hint is False
     # create_mockups spends credits: it must never advertise itself as read-only
-    assert not (tools["create_mockups"].annotations.readOnlyHint or False)
+    create = tools["create_mockups"].annotations
+    assert not (create.read_only_hint or False)
+    assert create.destructive_hint is False
+    assert create.idempotent_hint is False
+    assert create.open_world_hint is True
 
 
 # -- search -------------------------------------------------------------------
@@ -208,6 +212,18 @@ async def test_one_failed_render_does_not_sink_the_batch(monkeypatch):
     )
     assert out["succeeded"] == 1 and out["failed"] == 1
     assert "upstream exploded" in out["renders"][1]["error"]
+
+
+async def test_all_renders_failing_raises(monkeypatch):
+    async def broken(mockup_id, contents, size, destination="cdn", mode="async"):
+        raise RuntimeError("upstream exploded")
+
+    monkeypatch.setattr(api, "create_render", broken)
+    with pytest.raises(Exception, match="Every render failed.*upstream exploded"):
+        await _call(
+            "create_mockups",
+            {"mockup_ids": ["m-ipad"], "screenshot_url": "https://example.test"},
+        )
 
 
 # -- poll + account -----------------------------------------------------------

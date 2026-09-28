@@ -50,7 +50,7 @@ if settings.mcp_api_key.get_secret_value():
 mcp = FastMCP("mcp-mockuuups", auth=_auth)
 mcp.add_middleware(UsageMiddleware("mockuuups"))
 
-_READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True}
+_READ_ONLY = {"read_only_hint": True, "destructive_hint": False, "idempotent_hint": True}
 
 
 # -- envelopes ----------------------------------------------------------------
@@ -227,6 +227,12 @@ def _batch(results: list[RenderResult], note: str = "") -> RenderBatchResult:
     succeeded = sum(1 for r in results if r.state == "success")
     pending = sum(1 for r in results if r.state == "pending")
     failed = len(results) - succeeded - pending
+    if failed == len(results):
+        # Nothing to hand back: fail the call so it counts as an error.
+        raise ToolError(
+            "Every render failed: "
+            + "; ".join(f"{r.render_id or r.mockup_id}: {r.error}" for r in results)
+        )
     bits = [f"{succeeded}/{len(results)} rendered"]
     if pending:
         bits.append(
@@ -302,7 +308,15 @@ async def search_mockups(
     )
 
 
-@mcp.tool(tags={"mockups"}, annotations=ToolAnnotations(title="Create mockups"))
+@mcp.tool(
+    tags={"mockups"},
+    annotations=ToolAnnotations(
+        title="Create mockups",
+        destructive_hint=False,
+        idempotent_hint=False,
+        open_world_hint=True,
+    ),
+)
 async def create_mockups(
     mockup_ids: list[str],
     screenshot_url: str | None = None,
@@ -520,9 +534,6 @@ def main() -> None:
             host=settings.host,
             port=settings.port,
             stateless_http=True,
-            # fastmcp >=3.4.3 rejects non-localhost Host headers with 421 unless
-            # allowed_hosts is set (the edge is the tunnel).
-            allowed_hosts=["*"],
         )
     else:
         mcp.run()
