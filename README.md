@@ -64,15 +64,58 @@ create_mockups(
 )
 ```
 
+## Requirements
+
+- Python 3.12 or newer
+- FastMCP 4 (`fastmcp>=4.0.10,<5.0.0`, installed as a dependency)
+- A Mockuuups Studio account with a developer API key from
+  [mockuuups.studio/developers](https://mockuuups.studio/developers/)
+
+## Install and run
+
+The package is not on PyPI; run it from a checkout.
+
+```bash
+git clone https://github.com/CaseyRo/mcp-mockuuups && cd mcp-mockuuups
+uv sync
+MOCKUUUPS_API_KEY=... uv run mcp-mockuuups                               # stdio
+TRANSPORT=http MCP_API_KEY=change-me MOCKUUUPS_API_KEY=... uv run mcp-mockuuups   # streamable HTTP on /mcp
+```
+
+With Docker, the image builds from source:
+
+```bash
+cp .env.example .env   # fill in the keys
+docker compose --env-file .env up -d --build
+```
+
+`compose.yaml` publishes the server on host port `8013` and has no volumes on purpose: staged uploads live in memory. The container exposes `/health`.
+
 ## Configuration
 
-See [.env.example](.env.example). The two that matter:
+Every setting is an environment variable; [.env.example](.env.example) lists the common ones.
 
-- `MOCKUUUPS_API_KEY` — a developer key from
-  [mockuuups.studio/developers](https://mockuuups.studio/developers/).
-- `PUBLIC_BASE_URL` — this server's public origin. Uploads need it, because
-  Mockuuups' renderer fetches the staged image back over the public internet.
-  Screenshot and image-URL renders work without it.
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `MOCKUUUPS_API_KEY` | none | Mockuuups Studio developer key |
+| `PUBLIC_BASE_URL` | empty | This server's public origin. Needed only for `image_base64` uploads, because the Mockuuups renderer fetches the staged image back over the public internet. A private network address stages fine and then fails at render time. |
+| `MOCKUUUPS_MAX_SIZE` | `1000` | Largest render size sent upstream. Raise it when the plan has the `hires` feature. |
+| `UPLOAD_TTL_SECONDS` | `900` | How long a staged upload stays fetchable |
+| `UPLOAD_MAX_BYTES` | `12582912` | Size cap for one uploaded image (12 MiB) |
+| `CATALOG_TTL_SECONDS` | `86400` | How long the fetched catalog is cached |
+| `RENDER_WAIT_SECONDS` | `25` | Inline wait for renders before handing back `render_id`s |
+| `TRANSPORT` | `stdio` | `stdio` or `http` (the Docker image sets `http`) |
+| `HOST` | `127.0.0.1` | Bind address |
+| `PORT` | `8000` | Bind port |
+| `MCP_API_KEY` | none | Bearer token for the MCP endpoint. Required when `TRANSPORT=http`; the server refuses to start without it. |
+
+## Authentication
+
+Over HTTP, MCP requests must carry `Authorization: Bearer <MCP_API_KEY>`. The only unauthenticated routes are `/health`, `/healthz` and the staged-upload route `GET /i/{token}.{ext}`, which the Mockuuups renderer has to reach. That route is protected by a 256-bit random token, a short TTL, a size cap, and a check that only real image bytes are served.
+
+## Slow renders
+
+`create_mockups` dispatches every render concurrently and waits up to `RENDER_WAIT_SECONDS`. Anything still running comes back as `pending` with a `render_id`; the CDN links are already allocated. Pass those ids to `get_renders` (optionally with `wait_seconds` to long-poll) until they settle. Failures raise a tool error.
 
 ## Plan limits worth knowing
 
@@ -88,15 +131,27 @@ Two behaviours will bite you if you don't know them:
 - **On plans with `cdn-temporary`, delivery links expire after ~24 hours.**
   Download anything worth keeping. `account_status` reports this.
 
+## Usage telemetry
+
+A small middleware (`usage.py`) writes one JSON line per tool call to stderr with the server name, tool name, duration, outcome and protocol version. It never logs arguments or results.
+
 ## Development
 
 ```bash
 uv sync
 uv run pytest
-uv run mcp-mockuuups          # stdio
-TRANSPORT=http uv run mcp-mockuuups   # streamable-http on /mcp
 ```
+
+Tests need no network: the catalog, upload store and every tool are covered with fakes. CI (`.github/workflows/ci.yml`) runs them as the `test` check on every pull request. `main` is protected and changes land through pull requests.
+
+## Releases
+
+Releases are tag-only. After a merge to `main`, the release workflow tests the code and pushes the next `v*` patch tag; nothing is committed back to `main`. Do not bump `version` in `pyproject.toml` by hand. Deployments build the Docker image from source.
+
+## Support
+
+If this server saves you time, you can [buy me a coffee](https://buymeacoffee.com/caseyberlin).
 
 ## License
 
-MIT
+Released under the [MIT License](LICENSE).
