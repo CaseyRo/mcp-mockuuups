@@ -1,6 +1,9 @@
 services:
   mcp-mockuuups:
-    image: ghcr.io/caseyro/mcp-mockuuups:latest
+    # Built from source on deploy: the repo push webhook redeploys, so no
+    # registry image or second (Actions) webhook secret has to stay in sync.
+    build: .
+    pull_policy: build
     restart: unless-stopped
     init: true
     ports:
