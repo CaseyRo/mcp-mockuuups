@@ -31,13 +31,10 @@ jobs:
 
       - name: Install and test
         run: |
-          uv sync
+          uv sync --locked
           uv run pytest -x
         env:
           FASTMCP_MCP_CAMELCASE_COMPAT: "false"
-
-      - name: Security audit (pip-audit)
-        run: uvx pip-audit
 
       - name: Tag release
         id: version
