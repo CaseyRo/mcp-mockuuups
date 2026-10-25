@@ -214,7 +214,7 @@ async def _poll_until(results: list[RenderResult], deadline: float) -> None:
             *(client.get_render(r.render_id) for r in pending),
             return_exceptions=True,
         )
-        for result, payload in zip(pending, fetched):
+        for result, payload in zip(pending, fetched, strict=True):
             if isinstance(payload, BaseException):
                 continue
             updated = _render_from_payload(result.mockup_id, payload)
@@ -377,7 +377,7 @@ async def create_mockups(
     )
 
     results: list[RenderResult] = []
-    for mid, payload in zip(mockup_ids, dispatched):
+    for mid, payload in zip(mockup_ids, dispatched, strict=True):
         if isinstance(payload, BaseException):
             results.append(
                 RenderResult(
@@ -415,7 +415,7 @@ async def get_renders(
         *(client.get_render(rid) for rid in render_ids), return_exceptions=True
     )
     results: list[RenderResult] = []
-    for rid, payload in zip(render_ids, fetched):
+    for rid, payload in zip(render_ids, fetched, strict=True):
         if isinstance(payload, BaseException):
             results.append(
                 RenderResult(

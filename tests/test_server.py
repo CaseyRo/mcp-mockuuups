@@ -192,7 +192,7 @@ async def test_all_renders_failing_raises(monkeypatch):
         raise RuntimeError("upstream exploded")
 
     monkeypatch.setattr(api, "create_render", broken)
-    with pytest.raises(Exception, match="Every render failed.*upstream exploded"):
+    with pytest.raises(Exception, match=r"Every render failed.*upstream exploded"):
         await _call(
             "create_mockups",
             {"mockup_ids": ["m-ipad"], "screenshot_url": "https://example.test"},
